@@ -1,36 +1,34 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import './Buscar.css';
-function Busca() {
-    const [indicador, setIndicador] = useState('');
-    const [mensajeError, setMensajeError] = useState('');
-    const navigate = useNavigate();
+function Buscar() {
+    const [ciudad, setCiudad] = useState('');
+    const [error, setError] = useState('');
+    const [cargando, setCargando] = useState(false);
+    const generar = async () => {
+        setCargando(true);
+        setError('');
+        try {
+            const response = await fetch('http://localost:8080/clima/generar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
 
-    const handleChangeIndicador = (e) => {
-        setIndicador(e.target.value);
-        if (mensajeError) setMensajeError('');
+            const data = await response.json();
+            if (data.ciudad) {
+                setCiudad(data.ciudad);
+            } else {
+                throw new Error(data.error || 'No se recibió un código válido');
+            }
+        } catch (error) {
+            setError(error.message || 'Hubo un error generando el código');
+        } finally {
+            setCargando(false);
+        }
     };
 
-    return (
-            <div className="Buscar">
-                <div className="contenido">
-                    <h1>Resultados de búsqueda</h1>
-                    <button className="boton-volver" onClick={() => navigate('/')}>
-                     Volver
-                 </button>
-                </div>
-            </div>
-
-
-        );
-
-
-}
-function Buscar() {
-    return (
-        <Routes>
-            <Route path="/" element={<Busca />} />
-        </Routes>
-    );
 }
 export default Buscar;

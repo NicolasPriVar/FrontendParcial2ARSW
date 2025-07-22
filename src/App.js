@@ -53,7 +53,7 @@ function Inicio() {
                      />
 
 
-                 <button className="boton-buscar" onClick={() => navigate('/buscar')}>
+                 <button className="boton-buscar" onClick={(handleEntrar) => navigate('/buscar')}>
                      Buscar
                  </button>
             </div>
